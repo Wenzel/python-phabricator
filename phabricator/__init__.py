@@ -252,7 +252,8 @@ class Resource(object):
             if key not in [x.split(':')[0] for x in kwargs.keys()]:
                 raise ValueError('Missing required argument: %s' % key)
             if isinstance(kwargs.get(key), list) and not isinstance(val, list):
-                raise ValueError('Wrong argument type: %s is not a list' % key)
+                continue
+                # raise ValueError('Wrong argument type: %s is not a list' % key)
             elif not validate_kwarg(kwargs.get(key), val):
                 if isinstance(val, list):
                     raise ValueError('Wrong argument type: %s is not a list of %ss' % (key, val[0]))
@@ -306,6 +307,8 @@ class Resource(object):
         return Result(data['result'])
 
     def _parse_response(self, data):
+        # convert from bytes to str
+        data = data.decode('utf-8')
         # Process the response back to python
         parsed = self.api.formats[self.api.response_format](data)
 
